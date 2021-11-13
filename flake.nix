@@ -16,6 +16,7 @@
         overlays = [ rust-overlay.overlay ];
         pkgs = import nixpkgs { inherit system overlays; };
         rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+        inputs = [ rust pkgs.wasm-bindgen-cli ];
       in
       {
         defaultPackage = pkgs.rustPlatform.buildRustPackage {
@@ -28,10 +29,9 @@
             lockFile = ./Cargo.lock;
           };
 
-          buildPhase = ''
-            PATH=${rust}/bin:${pkgs.nodejs}/bin:$PATH:${pkgs.wasm-bindgen-cli}/bin
-            RUST_BACKTRACE=1
+          nativeBuildInputs = inputs;
 
+          buildPhase = ''
             cargo build --release --target=wasm32-unknown-unknown
 
             echo 'Creating out dir...'
@@ -51,9 +51,7 @@
         };
 
 
-        devShell = pkgs.mkShell {
-          buildInputs = [ pkgs.wasm-bindgen-cli rust ];
-        };
+        devShell = pkgs.mkShell { packages = inputs; };
       }
     );
 }
