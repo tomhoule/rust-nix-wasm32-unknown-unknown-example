@@ -1,5 +1,5 @@
 {
-  description = "Minimal rust wasm32-unknwon-unknown example";
+  description = "Minimal rust wasm32-unknown-unknown example";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
